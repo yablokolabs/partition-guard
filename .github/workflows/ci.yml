@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        compiler: [gcc-13, clang-17]
+        build_type: [Debug, Release]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install compiler
+        run: |
+          sudo apt-get update
+          if [ "${{ matrix.compiler }}" = "gcc-13" ]; then
+            sudo apt-get install -y g++-13
+            echo "CC=gcc-13" >> $GITHUB_ENV
+            echo "CXX=g++-13" >> $GITHUB_ENV
+          else
+            sudo apt-get install -y clang-17
+            echo "CC=clang-17" >> $GITHUB_ENV
+            echo "CXX=clang++-17" >> $GITHUB_ENV
+          fi
+
+      - name: Configure
+        run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DPG_BUILD_TESTS=ON -DPG_BUILD_BENCH=ON
+
+      - name: Build
+        run: cmake --build build -j$(nproc)
+
+      - name: Test
+        run: cd build && ctest --output-on-failure --timeout 60
+
+  sanitizers:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install clang
+        run: sudo apt-get update && sudo apt-get install -y clang-17
+
+      - name: Build with AddressSanitizer
+        run: |
+          cmake -B build-asan -DCMAKE_CXX_COMPILER=clang++-17 \
+            -DCMAKE_CXX_FLAGS="-fsanitize=address -fno-omit-frame-pointer" \
+            -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=address" \
+            -DPG_BUILD_TESTS=ON
+          cmake --build build-asan -j$(nproc)
+          cd build-asan && ctest --output-on-failure --timeout 120
+
+      - name: Build with ThreadSanitizer
+        run: |
+          cmake -B build-tsan -DCMAKE_CXX_COMPILER=clang++-17 \
+            -DCMAKE_CXX_FLAGS="-fsanitize=thread" \
+            -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=thread" \
+            -DPG_BUILD_TESTS=ON
+          cmake --build build-tsan -j$(nproc)
+          cd build-tsan && ctest --output-on-failure --timeout 120
