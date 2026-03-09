@@ -11,18 +11,18 @@
 
 namespace pg {
 
-Scheduler::Scheduler(const ScheduleConfig& config) noexcept
+Scheduler::Scheduler(const ScheduleConfig &config) noexcept
     : config_(config), stats_{}, running_(false) {
     std::memset(partitions_, 0, sizeof(partitions_));
     for (std::size_t i = 0; i < config_.num_partitions; ++i) {
-        auto& p = partitions_[i];
-        auto& desc = config_.partitions[i];
-        p.id       = desc.id;
-        p.name     = desc.name;
+        auto &p = partitions_[i];
+        auto &desc = config_.partitions[i];
+        p.id = desc.id;
+        p.name = desc.name;
         p.workload = nullptr;
-        p.state    = PartitionState::Idle;
-        p.iteration     = 0;
-        p.last_exec_ns  = 0;
+        p.state = PartitionState::Idle;
+        p.iteration = 0;
+        p.last_exec_ns = 0;
         p.worst_exec_ns = 0;
         p.total_exec_ns = 0;
     }
@@ -47,14 +47,15 @@ void Scheduler::pin_cpu() noexcept {
         param.sched_priority = 80;
         if (sched_setscheduler(0, SCHED_FIFO, &param) != 0) {
             // Non-fatal: just means we don't have RT privileges
-            std::fprintf(stderr, "[pg] Warning: could not set SCHED_FIFO (run as root for best results)\n");
+            std::fprintf(stderr,
+                         "[pg] Warning: could not set SCHED_FIFO (run as root for best results)\n");
         }
     }
 }
 
-void Scheduler::execute_window(const Window& window) noexcept {
-    auto& part = partitions_[window.partition_id];
-    auto& desc = config_.partitions[window.partition_id];
+void Scheduler::execute_window(const Window &window) noexcept {
+    auto &part = partitions_[window.partition_id];
+    auto &desc = config_.partitions[window.partition_id];
 
     if (part.state == PartitionState::Faulted || part.state == PartitionState::Stopped) {
         return; // Skip faulted/stopped partitions
@@ -81,7 +82,7 @@ void Scheduler::execute_window(const Window& window) noexcept {
     // Record end
     if (config_.trace_enabled) {
         trace_.record(TraceEvent::PartitionEnd, part.id, end_ns,
-                     static_cast<std::int32_t>(exec_ns / 1000)); // value = exec time in μs
+                      static_cast<std::int32_t>(exec_ns / 1000)); // value = exec time in μs
     }
 
     // Update statistics
@@ -98,27 +99,25 @@ void Scheduler::execute_window(const Window& window) noexcept {
         part.state = PartitionState::Overrun;
         stats_.total_overruns++;
 
-        auto action = health_.report_overrun(
-            part.id, overrun_ns, end_ns, desc.critical, &trace_);
+        auto action = health_.report_overrun(part.id, overrun_ns, end_ns, desc.critical, &trace_);
 
         switch (action) {
-            case HealthAction::RestartPartition:
-                std::fprintf(stderr, "[pg] HEALTH: Restarting partition %s (id=%u)\n",
-                            part.name, part.id);
-                part.state = PartitionState::Idle;
-                part.iteration = 0;
-                break;
-            case HealthAction::HaltSystem:
-                std::fprintf(stderr, "[pg] HEALTH: HALT — critical partition %s failed\n",
-                            part.name);
-                running_.store(false, std::memory_order_release);
-                return;
-            case HealthAction::LogWarning:
-                std::fprintf(stderr, "[pg] WARNING: Partition %s overran by %ldμs\n",
-                            part.name, overrun_ns / 1000);
-                break;
-            default:
-                break;
+        case HealthAction::RestartPartition:
+            std::fprintf(stderr, "[pg] HEALTH: Restarting partition %s (id=%u)\n", part.name,
+                         part.id);
+            part.state = PartitionState::Idle;
+            part.iteration = 0;
+            break;
+        case HealthAction::HaltSystem:
+            std::fprintf(stderr, "[pg] HEALTH: HALT — critical partition %s failed\n", part.name);
+            running_.store(false, std::memory_order_release);
+            return;
+        case HealthAction::LogWarning:
+            std::fprintf(stderr, "[pg] WARNING: Partition %s overran by %ldμs\n", part.name,
+                         overrun_ns / 1000);
+            break;
+        default:
+            break;
         }
     } else {
         part.state = PartitionState::Completed;
@@ -131,12 +130,13 @@ void Scheduler::execute_major_frame() noexcept {
 
     if (config_.trace_enabled) {
         trace_.record(TraceEvent::MajorFrameStart, 0xFF, frame_start,
-                     static_cast<std::int32_t>(stats_.major_frames));
+                      static_cast<std::int32_t>(stats_.major_frames));
     }
 
     // Execute each window in sequence
-    for (std::size_t w = 0; w < config_.num_windows && running_.load(std::memory_order_relaxed); ++w) {
-        auto& window = config_.windows[w];
+    for (std::size_t w = 0; w < config_.num_windows && running_.load(std::memory_order_relaxed);
+         ++w) {
+        auto &window = config_.windows[w];
 
         // Wait until window start time
         auto window_start = frame_start + window.offset_ns;
@@ -164,7 +164,7 @@ void Scheduler::execute_major_frame() noexcept {
 
     if (config_.trace_enabled) {
         trace_.record(TraceEvent::MajorFrameEnd, 0xFF, actual_end,
-                     static_cast<std::int32_t>(jitter / 1000));
+                      static_cast<std::int32_t>(jitter / 1000));
     }
 
     stats_.major_frames++;

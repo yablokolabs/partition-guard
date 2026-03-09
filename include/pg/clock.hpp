@@ -24,7 +24,7 @@ namespace pg {
 /// Returns actual wakeup time (for jitter measurement).
 inline std::int64_t sleep_until_ns(std::int64_t deadline_ns) noexcept {
     struct timespec ts;
-    ts.tv_sec  = deadline_ns / 1'000'000'000LL;
+    ts.tv_sec = deadline_ns / 1'000'000'000LL;
     ts.tv_nsec = deadline_ns % 1'000'000'000LL;
     clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &ts, nullptr);
     return now_ns();

@@ -11,28 +11,28 @@ namespace pg {
 
 /// Partition workload function type.
 /// Takes partition_id and iteration count, returns 0 on success.
-using WorkloadFn = int(*)(std::uint8_t partition_id, std::uint64_t iteration);
+using WorkloadFn = int (*)(std::uint8_t partition_id, std::uint64_t iteration);
 
 /// Partition runtime state.
 enum class PartitionState : std::uint8_t {
-    Idle,       ///< Not yet started
-    Running,    ///< Currently executing
-    Completed,  ///< Finished current window
-    Overrun,    ///< Exceeded budget
-    Faulted,    ///< Health monitor declared fault
-    Stopped,    ///< Permanently stopped
+    Idle,      ///< Not yet started
+    Running,   ///< Currently executing
+    Completed, ///< Finished current window
+    Overrun,   ///< Exceeded budget
+    Faulted,   ///< Health monitor declared fault
+    Stopped,   ///< Permanently stopped
 };
 
 /// Runtime partition instance.
 struct Partition {
-    std::uint8_t   id;
-    const char*    name;
-    WorkloadFn     workload;
+    std::uint8_t id;
+    const char *name;
+    WorkloadFn workload;
     PartitionState state;
-    std::uint64_t  iteration;        ///< Execution count
-    std::int64_t   last_exec_ns;     ///< Last measured execution time
-    std::int64_t   worst_exec_ns;    ///< Worst observed execution time
-    std::int64_t   total_exec_ns;    ///< Cumulative execution time
+    std::uint64_t iteration;    ///< Execution count
+    std::int64_t last_exec_ns;  ///< Last measured execution time
+    std::int64_t worst_exec_ns; ///< Worst observed execution time
+    std::int64_t total_exec_ns; ///< Cumulative execution time
 };
 
 // ── Example workloads ───────────────────────────────────────

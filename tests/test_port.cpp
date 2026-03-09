@@ -2,8 +2,8 @@
 /// Tests for IPC ports (sampling and queuing).
 
 #include "pg/port.hpp"
-#include <cstdio>
 #include <cassert>
+#include <cstdio>
 #include <cstring>
 
 void test_sampling_port_basic() {

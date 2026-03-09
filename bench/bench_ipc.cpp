@@ -1,10 +1,10 @@
 /// @file bench_ipc.cpp
 /// Benchmark: measure IPC port latency.
 
-#include "pg/port.hpp"
 #include "pg/clock.hpp"
-#include <cstdio>
+#include "pg/port.hpp"
 #include <cstdint>
+#include <cstdio>
 
 int main() {
     constexpr std::size_t ITERATIONS = 1'000'000;
@@ -23,8 +23,8 @@ int main() {
         auto elapsed = pg::now_ns() - start;
         auto per_op_ns = elapsed / (ITERATIONS * 2); // 2 ops per iter
 
-        std::fprintf(stderr, "SamplingPort<64>:  %zu ops in %.3fms  (%.1fns/op)\n",
-                    ITERATIONS * 2, static_cast<double>(elapsed) / 1e6, static_cast<double>(per_op_ns));
+        std::fprintf(stderr, "SamplingPort<64>:  %zu ops in %.3fms  (%.1fns/op)\n", ITERATIONS * 2,
+                     static_cast<double>(elapsed) / 1e6, static_cast<double>(per_op_ns));
     }
 
     // Benchmark queuing port enqueue+dequeue
@@ -42,7 +42,8 @@ int main() {
         auto per_op_ns = elapsed / (ITERATIONS * 2);
 
         std::fprintf(stderr, "QueuingPort<64,1024>: %zu ops in %.3fms  (%.1fns/op)\n",
-                    ITERATIONS * 2, static_cast<double>(elapsed) / 1e6, static_cast<double>(per_op_ns));
+                     ITERATIONS * 2, static_cast<double>(elapsed) / 1e6,
+                     static_cast<double>(per_op_ns));
     }
 
     return 0;

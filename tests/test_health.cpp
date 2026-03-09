@@ -2,8 +2,8 @@
 /// Tests for the health monitor.
 
 #include "pg/health_monitor.hpp"
-#include <cstdio>
 #include <cassert>
+#include <cstdio>
 
 void test_initial_state() {
     pg::HealthMonitor hm;
@@ -50,8 +50,8 @@ void test_critical_partition_halts() {
     // Exhaust restarts on a critical partition
     for (int r = 0; r < 5; ++r) {
         for (int i = 0; i < 3; ++i) {
-            (void)hm.report_overrun(0, 1000,
-                static_cast<std::int64_t>(r * 100000 + i * 1000), true);
+            (void)hm.report_overrun(0, 1000, static_cast<std::int64_t>(r * 100000 + i * 1000),
+                                    true);
         }
     }
 

@@ -2,8 +2,8 @@
 /// Tests for clock utilities.
 
 #include "pg/clock.hpp"
-#include <cstdio>
 #include <cassert>
+#include <cstdio>
 
 void test_monotonicity() {
     auto t1 = pg::now_ns();
