@@ -1,0 +1,17 @@
+flowchart TB
+    A["Major Frame Scheduler"] --> B["Partition A"]
+    A --> C["Partition B"]
+    A --> D["Partition C"]
+
+    B --> E["Budget Accounting"]
+    C --> E
+    D --> E
+
+    B --> F["Health Monitor"]
+    C --> F
+    D --> F
+
+    F --> G["Restart Policy"]
+    B <--> H["Lock-free IPC"]
+    C <--> H
+    D <--> H

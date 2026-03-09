@@ -79,6 +79,8 @@ Results:
 
 ## Architecture
 
+![partition-guard architecture](docs/architecture.svg)
+
 ```
 ┌─────────────────────────────────────────────┐
 │           Cyclic Executive Scheduler         │

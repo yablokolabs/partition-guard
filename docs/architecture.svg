@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" font-family="'Segoe UI', system-ui, -apple-system, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#666"/>
+    </marker>
+    <filter id="shadow" x="-2%" y="-2%" width="104%" height="104%">
+      <feDropShadow dx="1" dy="1" stdDeviation="2" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+
+  <text x="360" y="25" text-anchor="middle" font-size="14" font-weight="600" fill="#0d47a1">partition-guard — Architecture</text>
+
+  <!-- Major Frame Scheduler -->
+  <rect x="220" y="45" width="280" height="45" rx="6" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="360" y="73" text-anchor="middle" font-size="12" font-weight="600" fill="#0d47a1">Major Frame Scheduler</text>
+  <text x="360" y="85" text-anchor="middle" font-size="9" fill="#666">CLOCK_MONOTONIC · Cyclic Executive</text>
+
+  <!-- Partitions -->
+  <rect x="40" y="120" width="180" height="100" rx="6" fill="#bbdefb" stroke="#1565c0" stroke-width="1" filter="url(#shadow)"/>
+  <text x="130" y="145" text-anchor="middle" font-size="11" font-weight="600" fill="#333">Partition A</text>
+  <text x="130" y="162" text-anchor="middle" font-size="9" fill="#666">High criticality</text>
+  <rect x="55" y="172" width="150" height="20" rx="3" fill="#e3f2fd" stroke="#90caf9"/>
+  <text x="130" y="186" text-anchor="middle" font-size="9" fill="#555">Time budget: enforced</text>
+  <rect x="55" y="196" width="150" height="20" rx="3" fill="#e3f2fd" stroke="#90caf9"/>
+  <text x="130" y="210" text-anchor="middle" font-size="9" fill="#555">Controlled boundary</text>
+
+  <rect x="270" y="120" width="180" height="100" rx="6" fill="#bbdefb" stroke="#1565c0" stroke-width="1" filter="url(#shadow)"/>
+  <text x="360" y="145" text-anchor="middle" font-size="11" font-weight="600" fill="#333">Partition B</text>
+  <text x="360" y="162" text-anchor="middle" font-size="9" fill="#666">Medium criticality</text>
+  <rect x="285" y="172" width="150" height="20" rx="3" fill="#e3f2fd" stroke="#90caf9"/>
+  <text x="360" y="186" text-anchor="middle" font-size="9" fill="#555">Time budget: enforced</text>
+  <rect x="285" y="196" width="150" height="20" rx="3" fill="#e3f2fd" stroke="#90caf9"/>
+  <text x="360" y="210" text-anchor="middle" font-size="9" fill="#555">Controlled boundary</text>
+
+  <rect x="500" y="120" width="180" height="100" rx="6" fill="#bbdefb" stroke="#1565c0" stroke-width="1" filter="url(#shadow)"/>
+  <text x="590" y="145" text-anchor="middle" font-size="11" font-weight="600" fill="#333">Partition C</text>
+  <text x="590" y="162" text-anchor="middle" font-size="9" fill="#666">Lower criticality</text>
+  <rect x="515" y="172" width="150" height="20" rx="3" fill="#e3f2fd" stroke="#90caf9"/>
+  <text x="590" y="186" text-anchor="middle" font-size="9" fill="#555">Time budget: enforced</text>
+  <rect x="515" y="196" width="150" height="20" rx="3" fill="#e3f2fd" stroke="#90caf9"/>
+  <text x="590" y="210" text-anchor="middle" font-size="9" fill="#555">Controlled boundary</text>
+
+  <!-- Arrows from scheduler to partitions -->
+  <line x1="300" y1="90" x2="130" y2="120" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="360" y1="90" x2="360" y2="120" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="420" y1="90" x2="590" y2="120" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- IPC -->
+  <rect x="160" y="250" width="400" height="40" rx="6" fill="#e8eaf6" stroke="#5c6bc0" stroke-width="1" filter="url(#shadow)"/>
+  <text x="360" y="275" text-anchor="middle" font-size="11" font-weight="600" fill="#3949ab">Lock-free IPC</text>
+  <text x="245" y="285" text-anchor="middle" font-size="9" fill="#666">Sampling Ports</text>
+  <text x="475" y="285" text-anchor="middle" font-size="9" fill="#666">Queuing Ports</text>
+
+  <!-- IPC arrows -->
+  <line x1="130" y1="220" x2="200" y2="250" stroke="#5c6bc0" stroke-width="1" marker-end="url(#arrow)" stroke-dasharray="4"/>
+  <line x1="360" y1="220" x2="360" y2="250" stroke="#5c6bc0" stroke-width="1" marker-end="url(#arrow)" stroke-dasharray="4"/>
+  <line x1="590" y1="220" x2="520" y2="250" stroke="#5c6bc0" stroke-width="1" marker-end="url(#arrow)" stroke-dasharray="4"/>
+
+  <!-- Health Monitor + Budget Accounting -->
+  <rect x="40" y="310" width="200" height="50" rx="6" fill="#fff8e1" stroke="#f9a825" stroke-width="1" filter="url(#shadow)"/>
+  <text x="140" y="335" text-anchor="middle" font-size="11" font-weight="600" fill="#f57f17">Health Monitor</text>
+  <text x="140" y="350" text-anchor="middle" font-size="9" fill="#666">Fault detection · Heartbeats</text>
+
+  <rect x="260" y="310" width="200" height="50" rx="6" fill="#fff8e1" stroke="#f9a825" stroke-width="1" filter="url(#shadow)"/>
+  <text x="360" y="335" text-anchor="middle" font-size="11" font-weight="600" fill="#f57f17">Budget Accounting</text>
+  <text x="360" y="350" text-anchor="middle" font-size="9" fill="#666">Overrun detection · Trace log</text>
+
+  <rect x="480" y="310" width="200" height="50" rx="6" fill="#fff8e1" stroke="#f9a825" stroke-width="1" filter="url(#shadow)"/>
+  <text x="580" y="335" text-anchor="middle" font-size="11" font-weight="600" fill="#f57f17">Restart Policy</text>
+  <text x="580" y="350" text-anchor="middle" font-size="9" fill="#666">Warm restart · Cold restart · Halt</text>
+
+  <!-- Footer -->
+  <text x="360" y="395" text-anchor="middle" font-size="9" fill="#adb5bd" font-style="italic">Userspace runtime · Inspired by ARINC 653 · Not OS/MMU spatially isolated · Apache-2.0</text>
+</svg>
