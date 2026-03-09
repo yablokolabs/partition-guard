@@ -2,13 +2,13 @@
 
 **Userspace partition scheduler with temporal and spatial isolation.**
 
-Inspired by ARINC 653 partitioned architectures, built for research, prototyping, and education. Demonstrates how multiple software partitions can share a CPU with hard temporal boundaries — the core requirement of Integrated Modular Avionics (IMA).
+Inspired by ARINC 653 partitioned architectures, built for research, prototyping, and education. Demonstrates how multiple software partitions can share a CPU with controlled temporal boundaries — a core concept in Integrated Modular Avionics (IMA).
 
 ## What This Is
 
 A cyclic executive that runs software partitions in fixed time windows with:
 
-- **Temporal isolation** — each partition gets a strict time budget, enforced via `CLOCK_MONOTONIC`
+- **Temporal isolation** — each partition gets a controlled time budget, enforced via `CLOCK_MONOTONIC`
 - **Budget enforcement** — overruns are detected within nanoseconds
 - **Health monitoring** — automatic fault detection, partition restart, and system halt policies
 - **Deterministic IPC** — lock-free sampling ports (latest-value) and queuing ports (bounded FIFO)
